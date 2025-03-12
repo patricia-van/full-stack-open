@@ -43,12 +43,12 @@ const App = () => {
 
       <br></br>
 
-      <button onClick={() => setSelected(Math.round(Math.round(Math.random() * (7 - 0) + 0)))}>next anecdote</button>
+      <button onClick={() => setSelected(Math.round(Math.random() * anecdotes.length))}>next anecdote</button>
       <button onClick={handleVote}>vote anecdote</button>
 
       <h1>Anecdote with Most Votes</h1>
       <Anecdote text={anecdotes[mostVotes()]} votes={votes[mostVotes()]}></Anecdote>
-
+      http://localhost:5173/
     </div>
   )
 }
