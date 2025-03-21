@@ -32,6 +32,7 @@ const App = () => {
       .getAll()
       .then(response => {
         console.log('promise fulfilled')
+        console.log('this is the data', response.data)
         setPersons(response.data)
       })
   }, [])
