@@ -44,12 +44,12 @@ const App = () => {
     const person = persons.find(p => p.name.toLowerCase() === newName.toLowerCase())
 
     if (person) {
-      const confirmed = window.confirm(`${newName} is already added to phonebook, relace the old number wiht a new one?`);
+      const confirmed = window.confirm(`${newName} is already added to phonebook, replace the old number wiht a new one?`);
       if (confirmed) {
         console.log('updating number')
         const newPerson = { ...person, number: newNumber }
         personServive
-          .updatePerson(newPerson)
+          .update(person.id, newPerson)
           .then(response => {
             console.log(response)
             setMessage(`Updated number for ${person.name}`)
