@@ -4,12 +4,11 @@ mongoose.set('strictQuery', false)
 
 
 const url = process.env.MONGODB_URI
-// const url = 'mongodb+srv://fullstack:fullstack@cluster0.cwrf4.mongodb.net/noteApp?retryWrites=true&w=majority&appName=Cluster0'
 
 console.log('connecting to', url)
 mongoose.connect(url)
 
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch(error => {
