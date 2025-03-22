@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl  = 'http://localhost:3001/api/persons'
+const baseUrl  = 'api/persons'
 
 const getAll = () => {
     console.log('getting from', baseUrl)
@@ -15,9 +15,7 @@ const update = (id, newPerson) => {
 }
 
 const getName = name => {
-    return axios.get(baseUrl, {
-        params : {name: `${name}`}
-    })
+    return axios.get(baseUrl, { params : {name: `${name}`} })
 }
 
 const deletePerson = id => {
@@ -28,11 +26,4 @@ const updatePerson = newPerson => {
     return axios.put(`${baseUrl}/${newPerson.id}`, newPerson)
 } 
 
-export default { 
-    getAll: getAll, 
-    create: create, 
-    update: update,
-    getName: getName,
-    deletePerson: deletePerson,
-    updatePerson: updatePerson
-}
+export default { getAll, create, update, getName, deletePerson, updatePerson }
