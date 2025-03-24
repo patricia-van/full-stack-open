@@ -5,12 +5,12 @@ const Blog = ({ blog, updateLikes }) => {
 
   return (
     <div>
-      {blog.title} {blog.author} <button onClick={() => console.log(blog)}>{showDetails ? 'hide' : 'view'}</button><br />
+      {blog.title} {blog.author} <button onClick={() => setShowDetails(!showDetails)}>{showDetails ? 'hide' : 'view'}</button><br />
       {showDetails ? 
         <div>
           {blog.url} <br />
           likes {blog.likes} <button onClick={() => updateLikes(blog)}>like</button> < br/>
-          {blog.user}
+          {/* {blog.user} */}
         </div> 
         : <div></div>
       }
