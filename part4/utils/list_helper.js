@@ -7,19 +7,7 @@ const totalLikes = (blogs) => {
 }
 
 const favoriteBlog = (blogs) => {
-  if (blogs.length === 0) {
-    return null;
-  }
-
-  const favorite = blogs.reduce((fav, curr) => {
-    return curr.likes > fav.likes ? curr : fav
-  })
-
-  return {
-    title: favorite.title,
-    author: favorite.author,
-    likes: favorite.likes,
-  }
+  return blogs.reduce((max, blog) => max.likes > blog.likes ? max : blog, {});
 }
 
 module.exports = {

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const userExtractor = require('../utils/middleware').userExtractor
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -9,10 +10,13 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 }) 
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response) => {
   const { title, author, url, likes } = request.body
   const user = request.user
 
+  if (!user) {
+    return response.status(403).json({ error: 'user missing' })
+  }
   if (!title || !url) {
     return response.status(400).json({ error: 'title or url missing'})
   }
@@ -32,13 +36,22 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   const user = request.user
   const blog = await Blog.findById(request.params.id)
 
-  if ( blog.user.toString() === user._id.toString() ) {
-    await Blog.findByIdAndDelete(request.params.id)
+  if (!blog) {
+    return response.status(204).end()
+  } 
+  if ( blog.user.toString() !== user.id.toString() ) {
+    return response.status(403).json({ error: 'user not authorized' })
   }
+
+  await blog.deleteOne()
+  
+  user.blogs = user.blogs.filter(b => b._id.toString() !== blog._id.toString())
+  await user.save()
+
   response.status(204).end()
 })
 
