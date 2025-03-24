@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm  from './components/LoginForm'
 import BlogForm  from './components/BlogForm'
+import Notification  from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,10 +12,12 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(sortBlogs(blogs))
     )  
   }, [])
 
@@ -26,6 +29,10 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const sortBlogs = blogs => {
+    return blogs.sort((a, b) => b.likes - a.likes)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -40,7 +47,10 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (error) { 
-      console.log(error.message)
+      setMessage('Wrong credentials')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
   }
 
@@ -58,24 +68,52 @@ const App = () => {
         .create(newBlog)
         .then(savedBlog => {
           setBlogs(blogs.concat(savedBlog))
+          setMessage(`A new blog ${savedBlog.title} by ${savedBlog.author} added`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
     } catch (error) {
       console.log(error.message)
     }
   }
 
+  const updateLikes = async (blog) => {
+    console.log(blog)
+    try {
+      const updatedBlog = await blogService
+        .update({
+          ...blog, 
+          likes: blog.likes + 1
+        })
+      setBlogs(sortBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b)))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div>
       {user === null ?
-        <LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleSubmit={handleLogin}/> :
+        <div>
+          <h2>log in to application</h2>
+          <Notification message={message}/>
+          <LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleSubmit={handleLogin}/> 
+        </div> :
         <div>
           <h2>blogs</h2>
-          {user.name} logged-in
-          <button onClick={handleLogout}>logout</button>
+          <div>
+            <Notification message={message}/>
+            {user.name} logged-in
+            <button onClick={handleLogout}>logout</button>
+          </div>
 
-          <BlogForm createBlog={addBlog} />
+          
+          {!visible && <button onClick={() => setVisible(!visible)}>new blog</button>}
+          {visible && <BlogForm createBlog={addBlog} />}
+          {visible && <button onClick={() => setVisible(!visible)}>cancel</button>}
 
-          {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+          {blogs.map(blog => <Blog key={blog.id} blog={blog} updateLikes={updateLikes}/>)}
         </div>
       }
     </div>
