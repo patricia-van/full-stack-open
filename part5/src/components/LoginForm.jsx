@@ -1,7 +1,6 @@
 const LoginForm = ({ username, password, setUsername, setPassword, handleSubmit }) => {
     return (
       <div>
-        <h2>log in to application</h2>
         <form onSubmit={handleSubmit}>
           <div>
             username <input type='text' value={username} onChange={(event) => setUsername(event.target.value)}/>
