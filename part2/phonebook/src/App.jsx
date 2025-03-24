@@ -4,20 +4,9 @@ import './index.css'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 
 import personServive from './services/persons'
-
-const Notification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
-
-  return (
-    <div className='success'>
-      {message}
-    </div>
-  )
-}
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -27,16 +16,12 @@ const App = () => {
   const [message, setMessage] = useState(null)
 
   useEffect(() => {
-    console.log('effect')
     personServive
       .getAll()
       .then(response => {
-        console.log('promise fulfilled')
-        console.log('this is the data', response.data)
         setPersons(response.data)
       })
   }, [])
-  console.log('render', persons.length, 'persons')
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -47,9 +32,8 @@ const App = () => {
       const confirmed = window.confirm(`${newName} is already added to phonebook, replace the old number wiht a new one?`);
       if (confirmed) {
         console.log('updating number')
-        const newPerson = { ...person, number: newNumber }
         personServive
-          .update(person.id, newPerson)
+          .update(person.id, { ...person, number: newNumber })
           .then(response => {
             console.log(response)
             setMessage(`Updated number for ${person.name}`)
@@ -66,10 +50,8 @@ const App = () => {
       alert(`${newNumber} is already added to phonebook`)
     } 
     else {
-      const newPerson = { name: newName, number: newNumber }
-
       personServive
-        .create(newPerson)
+        .create({ name: newName, number: newNumber })
         .then(response => {
           setMessage(`Added ${newName}`)
             setTimeout(() => {
@@ -102,32 +84,16 @@ const App = () => {
     }
   }
   
-
-  const handleNameChange = (event) => {
-    console.log(event.target.value)
-    setNewName(event.target.value)
-  }
-
-  const handleNumberChange = (event) => {
-    console.log(event.target.value)
-    setNewNumber(event.target.value)
-  } 
-
-  const handleSearchChange = (event) => {
-    console.log(event.target.value)
-    setSearch(event.target.value)
-  }
-
-  const filteredPersons = search === '' ? persons : persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
+  const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
 
   return (
     <div>
       <h2>Phonebook</h2>
       <Notification message={message} />
-      <Filter search={search} handleSearchChange={handleSearchChange} />
+      <Filter search={search} setSearch={setSearch} />
 
       <h3>Add a new</h3>
-      <PersonForm newName={newName} newNumber={newNumber} handleOnSubmit={addPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
+      <PersonForm newName={newName} newNumber={newNumber} handleOnSubmit={addPerson} setNewName={setNewName} setNewNumber={setNewNumber} />
 
       <h3>Numbers</h3>
       <Persons persons={filteredPersons} deletePerson={deletePerson}/>
