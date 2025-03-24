@@ -18,7 +18,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(sortBlogs(blogs))
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -36,17 +36,17 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    console.log('logging in with', username, password)  
+    console.log('logging in with', username, password)
 
     try {
       const user = await loginService.login({ username, password })
       console.log(user)
-      window.localStorage.setItem('user', JSON.stringify(user)) 
+      window.localStorage.setItem('user', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
-    } catch (error) { 
+    } catch (error) {
       setMessage('Wrong credentials')
       setTimeout(() => {
         setMessage(null)
@@ -83,7 +83,7 @@ const App = () => {
     try {
       const updatedBlog = await blogService
         .update({
-          ...blog, 
+          ...blog,
           likes: blog.likes + 1
         })
       setBlogs(sortBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b)))
@@ -98,7 +98,7 @@ const App = () => {
         <div>
           <h2>log in to application</h2>
           <Notification message={message}/>
-          <LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleSubmit={handleLogin}/> 
+          <LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleSubmit={handleLogin}/>
         </div> :
         <div>
           <h2>blogs</h2>
@@ -108,7 +108,7 @@ const App = () => {
             <button onClick={handleLogout}>logout</button>
           </div>
 
-          
+
           {!visible && <button onClick={() => setVisible(!visible)}>new blog</button>}
           {visible && <BlogForm createBlog={addBlog} />}
           {visible && <button onClick={() => setVisible(!visible)}>cancel</button>}
