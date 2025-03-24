@@ -3,10 +3,10 @@ const LoginForm = ({ username, password, setUsername, setPassword, handleSubmit 
       <div>
         <form onSubmit={handleSubmit}>
           <div>
-            username <input type='text' value={username} onChange={(event) => setUsername(event.target.value)}/>
+            username <input type='text' value={username} onChange={(event) => setUsername(event.target.value)} data-testid='username'/>
           </div>
           <div>
-            password <input type='password' value={password} onChange={(event) => setPassword(event.target.value)}/>
+            password <input type='password' value={password} onChange={(event) => setPassword(event.target.value)} data-testid='password'/>
           </div>
           <div>
             <button type='submit'>login</button>
