@@ -1,15 +1,28 @@
+import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const LoginForm = ({ username, password, setUsername, setPassword, handleSubmit }) => {
+const LoginForm = ({ doLogin }) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleLogin = (event) => {
+    event.preventDefault()
+    doLogin({ username, password })
+    setUsername('')
+    setPassword('')
+  }
+
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-            username <input type='text' value={username} onChange={(event) => setUsername(event.target.value)} data-testid='username'/>
-        </div>
-        <div>
-            password <input type='password' value={password} onChange={(event) => setPassword(event.target.value)} data-testid='password'/>
-        </div>
+      <form onSubmit={handleLogin}>
+        <label>
+          Username:
+          <input type='text' value={username} onChange={(e) => setUsername(e.target.value)} data-testid='username'/>
+        </label>
+        <label>
+          Password:
+          <input type='password' value={password} onChange={(e) => setPassword(event.target.value)} data-testid='password'/>
+        </label>
         <div>
           <button type='submit'>login</button>
         </div>
