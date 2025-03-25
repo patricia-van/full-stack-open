@@ -15,14 +15,18 @@ const LoginForm = ({ doLogin }) => {
   return (
     <div>
       <form onSubmit={handleLogin}>
-        <label>
-          Username:
-          <input type='text' value={username} onChange={(e) => setUsername(e.target.value)} data-testid='username'/>
-        </label>
-        <label>
-          Password:
-          <input type='password' value={password} onChange={(e) => setPassword(event.target.value)} data-testid='password'/>
-        </label>
+        <div>
+          <label>
+            Username:
+            <input type='text' value={username} onChange={(e) => setUsername(e.target.value)} data-testid='username'/>
+          </label>
+        </div>
+        <div>
+          <label>
+            Password:
+            <input type='password' value={password} onChange={(e) => setPassword(event.target.value)} data-testid='password'/>
+          </label>
+        </div>
         <div>
           <button type='submit'>login</button>
         </div>
@@ -32,11 +36,7 @@ const LoginForm = ({ doLogin }) => {
 }
 
 LoginForm.propTypes = {
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
-  handleUsernameChange: PropTypes.func.isRequired,
-  handlePasswordChange: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired
+  doLogin: PropTypes.func.isRequired
 }
 
 export default LoginForm
