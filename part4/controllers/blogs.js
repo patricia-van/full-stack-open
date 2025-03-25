@@ -25,7 +25,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
     title: title,
     author: author,
     url: url,
-    user: user.id,
+    user: user,
     likes: likes ?? 0
   })
 
