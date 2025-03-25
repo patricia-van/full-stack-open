@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = ({ doCreate }) => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
 
-  const addBlog = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
-    createBlog({
+    doCreate({
       title: newTitle,
       author: newAuthor,
       url: newUrl
@@ -20,18 +20,21 @@ const BlogForm = ({ createBlog }) => {
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={addBlog}>
+      <form onSubmit={handleSubmit}>
         <div>
-            title:<input value={newTitle} onChange={(event) => setNewTitle(event.target.value)} id='title-input'/>
+          <label>Title:</label>
+          <input value={newTitle} onChange={(event) => setNewTitle(event.target.value)} id='title-input'/>
         </div>
         <div>
-            author:<input value={newAuthor} onChange={(event) => setNewAuthor(event.target.value)} id='author-input'/>
+          <label>Author:</label>
+          <input value={newAuthor} onChange={(event) => setNewAuthor(event.target.value)} id='author-input'/>
         </div>
         <div>
-            url:<input value={newUrl} onChange={(event) => setNewUrl(event.target.value)} id='url-input'/>
+          <label>URL:</label>
+          <input value={newUrl} onChange={(event) => setNewUrl(event.target.value)} id='url-input'/>
         </div>
         <div>
-          <button type='submit'>create</button>
+          <button type='submit'>Create</button>
         </div>
       </form>
     </div>
