@@ -1,35 +1,27 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 import { vote } from '../reducers/anecdoteReducer'
-
-const Anecdote = ({ anecdote, handleVote }) => {
-  return (
-    <div>
-      <div>
-        {anecdote.content}
-      </div>
-      <div>
-        has {anecdote.votes}
-        <button onClick={handleVote}>vote</button>
-      </div>
-    </div>
-  )
-}
 
 const AnecdoteList = () => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector(({ filter, anecdotes}) => {
+  const anecdotes = useSelector(({ filter, anecdotes }) => {
     return anecdotes.filter(a => a.content.toLowerCase().includes(filter.toLowerCase()))
-  })
+  }, shallowEqual)
 
   const byVotes = (a, b) => b.votes - a.votes
 
+
   return (
     <div>
-      {anecdotes.sort(byVotes).map(anecdote =>
-        <Anecdote 
-          key={anecdote.id} 
-          anecdote={anecdote} 
-          handleVote={() => dispatch(vote(anecdote.id))}/>
+      {anecdotes.slice().sort(byVotes).map(anecdote =>
+        <div key={anecdote.id}>
+          <div>
+            {anecdote.content}
+          </div>
+          <div>
+            has {anecdote.votes}
+            <button onClick={() => dispatch(vote(anecdote.id))}>vote</button>
+          </div>
+        </div>
       )}
     </div>
   )
