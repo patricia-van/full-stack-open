@@ -31,10 +31,11 @@ const App = () => {
   const queryClient = useQueryClient()
 
   const newNoteMutation = useMutation({
-    mutationFn: createNote, 
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] })
-    },
+    mutationFn: createNote,
+    onSuccess: (newNote) => {
+      const notes = queryClient.getQueryData(['notes'])
+      queryClient.setQueryData(['notes'], notes.concat(newNote))
+    }
   })
 
   const addNote = async (event) => {
@@ -50,14 +51,15 @@ const App = () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] })
     },
   })
-  
+
   const toggleImportance = (note) => {
     updateNoteMutation.mutate({...note, important: !note.important })
   }
 
   const result = useQuery({
     queryKey: ['notes'],
-    queryFn: getNotes
+    queryFn: getNotes,
+    refetchOnWindowFocus: false
   })
   console.log(JSON.parse(JSON.stringify(result)))
 
