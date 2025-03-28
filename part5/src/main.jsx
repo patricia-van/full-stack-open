@@ -13,6 +13,7 @@ const store = configureStore({
     blogs: BlogReducer,
     user: UserReducer,
   },
+  devTools: true,
 })
 
 ReactDOM.createRoot(document.getElementById('root')).render(

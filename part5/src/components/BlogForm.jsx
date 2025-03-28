@@ -1,17 +1,28 @@
-import { useState } from 'react'
+import { useState, createRef } from 'react'
+import { useDispatch } from 'react-redux'
 
-const BlogForm = ({ doCreate }) => {
+import { createBlog } from '../reducers/blogReducer'
+import { notify } from '../reducers/notificationRedcuer'
+
+const BlogForm = ({ toggleVisibility }) => {
+  const dispatch = useDispatch()
+
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
 
+  const blogFormRef = createRef()
+
   const handleSubmit = (event) => {
     event.preventDefault()
-    doCreate({
+    const blog = {
       title: newTitle,
       author: newAuthor,
-      url: newUrl
-    })
+      url: newUrl,
+    }
+    dispatch(createBlog(blog))
+    dispatch(notify(`Blog created: ${blog.title}, ${blog.author}`))
+    toggleVisibility()
     setNewTitle('')
     setNewAuthor('')
     setNewUrl('')
@@ -23,15 +34,27 @@ const BlogForm = ({ doCreate }) => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Title:</label>
-          <input value={newTitle} onChange={(event) => setNewTitle(event.target.value)} id='title-input'/>
+          <input
+            value={newTitle}
+            onChange={(event) => setNewTitle(event.target.value)}
+            id='title-input'
+          />
         </div>
         <div>
           <label>Author:</label>
-          <input value={newAuthor} onChange={(event) => setNewAuthor(event.target.value)} id='author-input'/>
+          <input
+            value={newAuthor}
+            onChange={(event) => setNewAuthor(event.target.value)}
+            id='author-input'
+          />
         </div>
         <div>
           <label>URL:</label>
-          <input value={newUrl} onChange={(event) => setNewUrl(event.target.value)} id='url-input'/>
+          <input
+            value={newUrl}
+            onChange={(event) => setNewUrl(event.target.value)}
+            id='url-input'
+          />
         </div>
         <div>
           <button type='submit'>Create</button>
