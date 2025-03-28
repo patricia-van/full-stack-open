@@ -1,13 +1,29 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 
-const LoginForm = ({ doLogin }) => {
+import loginService from '../services/login'
+import storage from '../services/storage'
+import { notify } from '../reducers/notificationRedcuer'
+import { setUser } from '../reducers/userReducer'
+
+const LoginForm = () => {
+  const dispatch = useDispatch()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault()
-    doLogin({ username, password })
+    const credentials = { username, password }
+    try {
+      const user = await loginService.login(credentials)
+      dispatch(setUser(user))
+      storage.saveUser(user)
+      dispatch(notify(`Welcome back, ${user.name}`))
+    } catch (error) {
+      dispatch(notify('Wrong credentials', 'error'))
+    }
+    // doLogin({ username, password })
     setUsername('')
     setPassword('')
   }
@@ -18,13 +34,23 @@ const LoginForm = ({ doLogin }) => {
         <div>
           <label>
             Username:
-            <input type='text' value={username} onChange={(e) => setUsername(e.target.value)} data-testid='username'/>
+            <input
+              type='text'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              data-testid='username'
+            />
           </label>
         </div>
         <div>
           <label>
             Password:
-            <input type='password' value={password} onChange={(e) => setPassword(event.target.value)} data-testid='password'/>
+            <input
+              type='password'
+              value={password}
+              onChange={(e) => setPassword(event.target.value)}
+              data-testid='password'
+            />
           </label>
         </div>
         <div>
@@ -33,10 +59,6 @@ const LoginForm = ({ doLogin }) => {
       </form>
     </div>
   )
-}
-
-LoginForm.propTypes = {
-  doLogin: PropTypes.func.isRequired
 }
 
 export default LoginForm
