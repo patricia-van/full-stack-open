@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Routes, Route, Link, useParams, useMatch, useNavigate } from 'react-router-dom'
+import { useField } from './hooks/index.js'
 
 const Menu = () => {
   const padding = {
@@ -6,9 +8,9 @@ const Menu = () => {
   }
   return (
     <div>
-      <a href='#' style={padding}>anecdotes</a>
-      <a href='#' style={padding}>create new</a>
-      <a href='#' style={padding}>about</a>
+      <Link style={padding} to="/">anecdotes</Link>
+      <Link style={padding} to="/create">create new</Link>
+      <Link style={padding} to="/about">about</Link>
     </div>
   )
 }
@@ -17,10 +19,24 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => 
+        <li key={anecdote.id} >
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
+      )}
     </ul>
   </div>
 )
+
+const Anecdote = ({ anecdote }) => {
+  return (
+    <div>
+      <h2>{anecdote.content} by {anecdote.author}</h2>
+      <p>has {anecdote.votes} votes</p>
+      <p>for more info see <a href='#'>{anecdote.info}</a></p>
+    </div>
+  );
+};
 
 const About = () => (
   <div>
@@ -44,39 +60,52 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+const CreateNew = ({ addNew, setNotification }) => {
+  const navigate = useNavigate()
+  
+  const { reset : resetContent, ...content} = useField("text");
+  const { reset : resetAuthor, ...author} = useField('text') 
+  const { reset : resetInfo, ...info} = useField('text') 
 
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    props.addNew({
-      content,
-      author,
-      info,
+    addNew({
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
+    navigate('/')
+    setNotification(`a new anecdote ${content.value} created!`)
+    setTimeout(() => setNotification(''), 5000)
   }
+
+  const handleReset = (e) => {
+    e.preventDefault()
+    resetContent()
+    resetAuthor()
+    resetInfo()
+  };
 
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...info} />
         </div>
-        <button>create</button>
+        <button onClick={handleSubmit}>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
@@ -84,6 +113,8 @@ const CreateNew = (props) => {
 }
 
 const App = () => {
+  
+
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
@@ -100,7 +131,6 @@ const App = () => {
       id: 2
     }
   ])
-
   const [notification, setNotification] = useState('')
 
   const addNew = (anecdote) => {
@@ -122,13 +152,22 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const match = useMatch('/anecdotes/:id')
+  const anecdote = match 
+    ? anecdoteById(Number(match.params.id))
+    : null
+
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
+      {notification}
+      <Routes>
+        <Route path="/" element={ <AnecdoteList anecdotes={anecdotes} /> } />
+        <Route path="/anecdotes/:id" element={ <Anecdote anecdote={anecdote} /> } />
+        <Route path="/create" element={ <CreateNew addNew={addNew} setNotification={setNotification}/> } />
+        <Route path="/about" element={ <About /> } />
+      </Routes>
       <Footer />
     </div>
   )
