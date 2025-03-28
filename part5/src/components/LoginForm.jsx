@@ -1,11 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import PropTypes from 'prop-types'
 
-import loginService from '../services/login'
-import storage from '../services/storage'
-import { notify } from '../reducers/notificationRedcuer'
-import { setUser } from '../reducers/userReducer'
+import { loginUser } from '../reducers/userReducer'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -14,16 +10,7 @@ const LoginForm = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    const credentials = { username, password }
-    try {
-      const user = await loginService.login(credentials)
-      dispatch(setUser(user))
-      storage.saveUser(user)
-      dispatch(notify(`Welcome back, ${user.name}`))
-    } catch (error) {
-      dispatch(notify('Wrong credentials', 'error'))
-    }
-    // doLogin({ username, password })
+    dispatch(loginUser({ username, password }))
     setUsername('')
     setPassword('')
   }
