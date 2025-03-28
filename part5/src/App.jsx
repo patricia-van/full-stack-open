@@ -7,11 +7,8 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
-import storage from './services/storage'
-
-import { notify } from './reducers/notificationRedcuer'
-import { initialiseBlogs, createBlog } from './reducers/blogReducer'
-import { loadExistingUser, removeUser, setUser } from './reducers/userReducer'
+import { initialiseBlogs } from './reducers/blogReducer'
+import { loadExistingUser, logoutUser } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -29,9 +26,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    dispatch(removeUser())
-    storage.removeUser()
-    dispatch(notify(`Bye, ${user.name}!`))
+    dispatch(logoutUser(user))
   }
 
   return (

@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import storage from '../services/storage'
-import blogService from '../services/blogs'
 
-import { notify } from '../reducers/notificationRedcuer'
+import storage from '../services/storage'
+
 import { like, deleteBlog } from '../reducers/blogReducer'
 
 const Blog = ({ blog }) => {
@@ -22,21 +21,12 @@ const Blog = ({ blog }) => {
   const canRemove = blog.user ? blog.user.username === storage.me() : true
 
   const handleLike = async (blog) => {
-    console.log('updating', blog)
-    const updatedBlog = await blogService.update(blog.id, {
-      ...blog,
-      likes: blog.likes + 1,
-    })
-    console.log('notifying')
-    dispatch(notify(`You liked ${updatedBlog.title} by ${updatedBlog.author}`))
-    dispatch(like(updatedBlog.id))
+    dispatch(like(blog))
   }
 
   const handleDelete = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.remove(blog.id)
-      dispatch(deleteBlog(blog.id))
-      dispatch(notify(`Blog ${blog.title}, by ${blog.author} removed`))
+      dispatch(deleteBlog(blog))
     }
   }
 
