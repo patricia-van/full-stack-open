@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import storage from '../services/storage'
 
@@ -32,8 +33,10 @@ const Blog = ({ blog }) => {
 
   return (
     <div style={style} className='blog'>
-      {blog.title} by {blog.author}
-      <button style={{ marginLeft: 3 }} onClick={() => setVisible(!visible)}>
+      <Link to={`/blogs/${blog.id}`}>
+        {blog.title} by {blog.author}
+      </Link>
+      {/* <button style={{ marginLeft: 3 }} onClick={() => setVisible(!visible)}>
         {visible ? 'hide' : 'view'}
       </button>
       <br />
@@ -53,7 +56,7 @@ const Blog = ({ blog }) => {
         </div>
       ) : (
         <div></div>
-      )}
+      )} */}
     </div>
   )
 }

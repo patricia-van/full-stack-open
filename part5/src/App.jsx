@@ -1,56 +1,57 @@
-import { useEffect, createRef } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import BlogList from './components/BlogList'
-import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
-import Notification from './components/Notification'
-import Togglable from './components/Togglable'
-
+import { Routes, Route, useParams, Link } from 'react-router-dom'
 import { initialiseBlogs } from './reducers/blogReducer'
-import { loadExistingUser, logoutUser } from './reducers/userReducer'
+import { loadExistingUser } from './reducers/loginReducer'
+import { initialiseUsers } from './reducers/usersReducer'
+
+import Home from './views/Home'
+import Users from './views/Users'
+import User from './views/User'
+import Blog from './views/Blog'
+
+// const Blog = () => {
+//   const id = useParams().id
+//   const blog = useSelector((state) => state.blogs.find((b) => b.id === id))
+//   return (
+//     <div>
+//       <h1>{blog.title}</h1>
+//       {blog.url}
+//       {blog.likes} likes added by {blog.author}
+//     </div>
+//   )
+// }
 
 const App = () => {
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user)
+  const loggedUser = useSelector((state) => state.login)
 
   useEffect(() => {
     dispatch(initialiseBlogs())
     dispatch(loadExistingUser())
+    dispatch(initialiseUsers())
   }, [])
 
-  const blogFormRef = createRef()
-
-  const toggleVisibility = () => {
-    blogFormRef.current.toggleVisibility()
+  const padding = {
+    padding: 5,
   }
-
-  const handleLogout = () => {
-    dispatch(logoutUser(user))
-  }
-
   return (
-    <div>
-      {user === null ? (
-        <div>
-          <h2>log in to application</h2>
-          <Notification />
-          <LoginForm />
-        </div>
-      ) : (
-        <div>
-          <h2>blogs</h2>
-          <Notification />
-          <div>
-            {user.name} logged-in
-            <button onClick={handleLogout}>logout</button>
-          </div>
-          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-            <BlogForm toggleVisibility={toggleVisibility} />
-          </Togglable>
-          <BlogList />
-        </div>
-      )}
+    <div className='container'>
+      <div>
+        <Link to='/' style={padding}>
+          home
+        </Link>
+        <Link to='/users' style={padding}>
+          users
+        </Link>
+      </div>
+
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/users' element={<Users />} />
+        <Route path='/users/:id' element={<User />} />
+        <Route path='/blogs/:id' element={<Blog />} />
+      </Routes>
     </div>
   )
 }

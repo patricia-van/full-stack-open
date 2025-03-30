@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
-import { notify } from './notificationRedcuer'
+import { notify } from './notificationReducer'
 
 const byLikes = (a, b) => b.votes - a.votes
 

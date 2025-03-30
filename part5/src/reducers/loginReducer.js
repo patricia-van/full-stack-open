@@ -2,28 +2,28 @@ import { createSlice } from '@reduxjs/toolkit'
 import storage from '../services/storage'
 import loginService from '../services/login'
 
-import { notify } from './notificationRedcuer'
+import { notify } from './notificationReducer'
 
 const slice = createSlice({
-  name: 'user',
+  name: 'login',
   initialState: null,
   reducers: {
-    setUser(state, action) {
+    setLogin(state, action) {
       return action.payload
     },
-    removeUser(state, action) {
+    removeLogin(state, action) {
       return null
     },
   },
 })
 
-export const { setUser, removeUser } = slice.actions
+export const { setLogin, removeLogin } = slice.actions
 
 export const loadExistingUser = () => {
   return async (dispatch) => {
     const user = storage.loadUser()
     if (user) {
-      dispatch(setUser(user))
+      dispatch(setLogin(user))
     }
   }
 }
@@ -32,7 +32,7 @@ export const loginUser = ({ username, password }) => {
   return async (dispatch) => {
     try {
       const user = await loginService.login({ username, password })
-      dispatch(setUser(user))
+      dispatch(setLogin(user))
       storage.saveUser(user)
       dispatch(notify(`Welcome back, ${user.name}`))
     } catch (error) {
@@ -43,7 +43,7 @@ export const loginUser = ({ username, password }) => {
 
 export const logoutUser = (user) => {
   return async (dispatch) => {
-    dispatch(removeUser())
+    dispatch(removeLogin())
     storage.removeUser()
     dispatch(notify(`Bye, ${user.name}!`))
   }

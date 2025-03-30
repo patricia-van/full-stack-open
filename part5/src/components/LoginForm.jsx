@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { loginUser } from '../reducers/userReducer'
+import { loginUser } from '../reducers/loginReducer'
+
+import { Table, Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -17,33 +19,33 @@ const LoginForm = () => {
 
   return (
     <div>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>
             Username:
-            <input
+            <Form.Control
               type='text'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               data-testid='username'
             />
-          </label>
-        </div>
-        <div>
-          <label>
+          </Form.Label>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>
             Password:
-            <input
+            <Form.Control
               type='password'
               value={password}
               onChange={(e) => setPassword(event.target.value)}
               data-testid='password'
             />
-          </label>
-        </div>
-        <div>
-          <button type='submit'>login</button>
-        </div>
-      </form>
+          </Form.Label>
+        </Form.Group>
+        <Button variant='primary' type='submit'>
+          login
+        </Button>
+      </Form>
     </div>
   )
 }
