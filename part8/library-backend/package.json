@@ -10,6 +10,12 @@
   "description": "",
   "dependencies": {
     "@apollo/server": "^4.11.3",
-    "graphql": "^16.10.0"
+    "dotenv": "^16.4.7",
+    "graphql": "^16.10.0",
+    "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.1",
+    "mongoose-unique-validator": "^4.0.1",
+    "npm": "^11.2.0"
   }
 }
